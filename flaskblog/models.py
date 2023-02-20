@@ -1,6 +1,10 @@
 from datetime import datetime
-from flaskblog import db
-class User(db.Model):
+from flaskblog import db, login_manager
+from flask_login import UserMixin #this class has 3 attributes: is_authenticated, is_active, is_annoymous and 1 method: get_user_by_id
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id)) #flask-login knows this is the function to get the user by id
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key = True )
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
