@@ -35,8 +35,8 @@ def register():
         return redirect(url_for("home"))
     form = RegisterForm()
     if form.validate_on_submit():
-        hased_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8') # this is to hash the password and convert the bytes password into a regular string
-        user = User(username=form.username.data, email=form.email.data, password =hased_password)
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8') # this is to hash the password and convert the bytes password into a regular string
+        user = User(username=form.username.data, email=form.email.data, password =hashed_password)
         db.session.add(user)
         db.session.commit()
         flash('Your account has been created', 'success')
@@ -67,4 +67,5 @@ def logout():
 @app.route("/account", methods = ['GET'])
 @login_required
 def account():
-    return render_template('account.html', title='Account')
+    image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
+    return render_template('account.html', title='Account', image_file=image_file)
