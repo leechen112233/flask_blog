@@ -25,6 +25,7 @@ posts = [
 @app.route("/")
 @app.route("/home")
 def home():
+    posts = Post.query.all()
     return render_template('home.html', posts=posts)
 
 
@@ -106,6 +107,13 @@ def account():
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        flash('Your post has been posted successfully!', 'success')
+        new_post = Post(
+            title=form.title.data,
+            content = form.content.data,
+            author_id = current_user.id
+        )
+        db.session.add(new_post)
+        db.session.commit()
+        flash('Your post has been created successfully!,','success')
         return redirect(url_for('home'))
     return render_template('create_post.html', title='New Post', form=form)
