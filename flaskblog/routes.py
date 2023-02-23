@@ -130,9 +130,15 @@ def update_post(post_id):
     if post.author != current_user:
         abort(403)
     form = PostForm()
-
-    # use the post's title and content for the update post page
-    form.title.data = post.title
-    form.content.data = post.content
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        flash('Your post has been updated successfully!', 'success')
+        return redirect(url_for('post', post_id=post.id))
+    elif request.method == 'GET':
+        # use the post's title and content for the update post page
+        form.title.data = post.title
+        form.content.data = post.content
 
     return render_template('create_post.html', title='Update Post', form=form, legend='Update_post')
