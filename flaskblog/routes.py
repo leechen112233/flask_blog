@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, abort
 from flaskblog.forms import RegisterForm, LoginForm, UpdateAccountForm, PostForm
 from flaskblog.models import User, Post
 from flaskblog import app, db, bcrypt
@@ -119,7 +119,20 @@ def new_post():
     return render_template('create_post.html', title='New Post', form=form)
 
 @app.route("/post/<int:post_id>", methods = ['GET', 'POST', 'PUT'])
-@login_required
 def post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('post.html', title=post.title, post=post)
+    return render_template('post.html', title=post.title, post=post , legend='new_post')
+
+@app.route("/post/<int:post_id>/update", methods = ['GET', 'POST', 'PUT'])
+@login_required
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)
+    form = PostForm()
+
+    # use the post's title and content for the update post page
+    form.title.data = post.title
+    form.content.data = post.content
+
+    return render_template('create_post.html', title='Update Post', form=form, legend='Update_post')
