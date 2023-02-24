@@ -26,7 +26,7 @@ posts = [
 @app.route("/home")
 def home():
     page = request.args.get('page', 1, type=int) # set default value to 1, and type is integer
-    posts = Post.query.paginate(page=page, per_page=2)
+    posts = Post.query.order_by(Post.id.desc()).paginate(page=page, per_page=5)
     return render_template('home.html', posts=posts)
 
 
