@@ -122,7 +122,7 @@ def new_post():
 @app.route("/post/<int:post_id>", methods = ['GET', 'POST', 'PUT'])
 def post(post_id):
     post = Post.query.get_or_404(post_id)
-    return render_template('post.html', title=post.title, post=post , legend='new_post')
+    return render_template('post.html', title=post.title, post=post, legend='new_post')
 
 @app.route("/post/<int:post_id>/update", methods = ['GET', 'POST', 'PUT'])
 @login_required
@@ -154,3 +154,10 @@ def delete_post(post_id):
     db.session.commit()
     flash('Your post has been deleted successfully!', 'success')
     return redirect(url_for('home'))
+
+@app.route("/user/<string:username>")
+def user_posts(username):
+    page = request.args.get('page', 1, type=int) # set default value to 1, and type is integer
+    user = User.query.filter_by(username=username).first_or_404()
+    posts = Post.query.filter_by(author=user).order_by(Post.id.desc()).paginate(page=page, per_page=5)
+    return render_template('user_posts.html', posts=posts, user=user)
