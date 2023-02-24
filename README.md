@@ -1,2 +1,2 @@
 # flask_blog
-learn flask
+A mini blog built on flask
