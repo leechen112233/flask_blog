@@ -1,11 +1,12 @@
 from flask import render_template, url_for, flash, redirect, request, abort
 from flaskblog.forms import RegisterForm, LoginForm, UpdateAccountForm, PostForm, ResetPasswordForm, RequestResetForm
 from flaskblog.models import User, Post
-from flaskblog import app, db, bcrypt
+from flaskblog import app, db, bcrypt, mail
 from flask_login import login_user, current_user, logout_user, login_required
 import secrets
 import os
 from PIL import Image
+from flask_mail import Message
 
 posts = [
     {
@@ -163,6 +164,12 @@ def user_posts(username):
     return render_template('user_posts.html', posts=posts, user=user)
 
 def send_reset_email(user):
+    token = user.get_reset_token()
+    msg = Message("Password reset", sender=os.environ.get('EMAIL_USERNAME'), recipients=[user.email])
+    msg.body = repr(f'''To reset your password, please visit the following link:
+{url_for("reset_token", token=token, _external=True )}
+If you did not make this request, simply ignore this email and no change will be applied!
+''')
     pass
 
 @app.route("/reset_password", methods = ['GET', 'POST'])
@@ -174,9 +181,12 @@ def reset_request():
     form = RequestResetForm()
     if form.validate_on_submit():
         user = User.query.filter(email=form.email.data).first()
-        send_reset_email(user)
-        flash("Your password is reseted successfully", 'success')
-        return redirect(url_for("login"))
+        if user is not None:
+            send_reset_email(user)
+            flash("Your password is reseted successfully", 'success')
+            return redirect(url_for("login"))
+        else:
+            flash("This email does not exist!", 'error')
     return render_template('reset_request.html', title="Reset Password", form=form)
 
 @app.route("/reset_password/<string:token>", methods = ['GET', 'POST'])
