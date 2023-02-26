@@ -184,7 +184,7 @@ def reset_request():
         if user is None:
             flash("There is no such email exists", 'error')
             return
-        send_reset_email(user
+        send_reset_email(user)
         flash("An email has been sent with instructions to reset your password", 'success')
         return redirect(url_for("login"))
     return render_template('reset_request.html', title="Reset Password", form=form)

@@ -14,5 +14,3 @@ build/
 *.egg-info/
 
 __pycache__/
-
-SECRETS.md

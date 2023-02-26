@@ -2,4 +2,4 @@
 A mini blog built on flask
 
 # deployment
-1. when deploy this application, you need to set the environment variables EMAIL_USERNAME and EMAIL_PASSWORD for sending emails correctly
+1. when deploy this application, you need to set the environment variables EMAIL_USERNAME and EMAIL_PASSWORD for sending emails correctl
