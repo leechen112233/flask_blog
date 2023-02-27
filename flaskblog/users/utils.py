@@ -25,6 +25,6 @@ def send_reset_email(user):
     # print("os.environ.get('EMAIL_USERNAME:", os.environ.get('EMAIL_USERNAME'))
     msg = Message("Password reset", sender=app.config['MAIL_USERNAME'], recipients=[user.email])
     msg.body = repr(f'''To reset your password, please visit the following link:
-                    {url_for("reset_token", token=token, _external=True )}  If you did not make this request, simply ignore this email and no change will be applied!
+                    {url_for("users.reset_token", token=token, _external=True )}  If you did not make this request, simply ignore this email and no change will be applied!
 ''')
     mail.send(msg)
