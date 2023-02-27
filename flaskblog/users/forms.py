@@ -1,16 +1,15 @@
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, SubmitField, BooleanField, TextAreaField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
-from flaskblog.models import User, Post
-
+from flaskblog.models import User
 
 class RegisterForm(FlaskForm):
     username = StringField('username', validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('email', validators=[DataRequired()])
-    password = StringField('password', validators=[DataRequired()])
-    confirm_password = StringField('confirm_password', validators=[DataRequired(), EqualTo('password')])
+    password = PasswordField('password', validators=[DataRequired()])
+    confirm_password = PasswordField('confirm_password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign up')
 
     def validate_username(self, username):
@@ -24,7 +23,7 @@ class RegisterForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     email = StringField('email', validators=[DataRequired()])
-    password = StringField('password', validators=[DataRequired()])
+    password = PasswordField('password', validators=[DataRequired()])
     remember = BooleanField('remember me')
     submit = SubmitField('Login')
 
@@ -45,11 +44,6 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('That email is taken, please choose a different one!')
 
-class PostForm(FlaskForm):
-    title = StringField('title', validators=[DataRequired()])
-    content = TextAreaField('content', validators=[DataRequired()])
-    submit = SubmitField('Post')
-
 class RequestResetForm(FlaskForm):
     email = StringField('email', validators=[DataRequired()])
     submit = SubmitField('Request Password Reset')
@@ -60,6 +54,6 @@ class RequestResetForm(FlaskForm):
             raise ValidationError('There is no account with that email, you must register first!')
 
 class ResetPasswordForm(FlaskForm):
-    password = StringField('password', validators=[DataRequired()])
+    password = PasswordField('password', validators=[DataRequired()])
     confirm_password = StringField('confirm_password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Reset Password')
