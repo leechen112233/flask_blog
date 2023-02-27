@@ -5,8 +5,6 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from flaskblog.config import Config
 
-
-
 db = SQLAlchemy() #an sqlalchemy database instance
 bcrypt = Bcrypt()
 login_manager = LoginManager() #add some functionalities to the backend, and it will handle the login session
